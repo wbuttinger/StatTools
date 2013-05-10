@@ -1,0 +1,26 @@
+package StatTools
+author Will Buttinger
+version StatTools-00-00-01
+
+
+use 	AtlasPolicy 	AtlasPolicy-*
+use 	AtlasROOT 	AtlasROOT-* External
+
+apply_tag ROOTMathLibs
+apply_tag ROOTGraphicsLibs
+apply_tag ROOTTableLibs
+
+library StatTools *.cxx
+macro_append StatTools_shlibflags " -lTreePlayer -lProof "
+
+apply_pattern installed_library
+
+apply_pattern have_root_headers     root_headers="TBumpHunter.h LinkDef.h"    headers_lib="StatTools"
+
+make_fragment rlibmap -header=rlibmap_header
+document rlibmap MyLibMap LIBNAME=StatTools
+macro_append MyLibMap_dependencies " StatTools "
+apply_pattern application_path
+macro merge_rootmap_tag "--do-merge" do_merge_rootmap "--do-merge" no_merge_rootmap "--un-merge"
+document merge_rootmap MyLibMergeMap library=StatTools merge_rootmap_switch=$(merge_rootmap_tag) $(bin)libStatTools.so
+macro_append MyLibMergeMap_dependencies " MyLibMap "

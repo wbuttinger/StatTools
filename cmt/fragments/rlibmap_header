@@ -1,0 +1,22 @@
+##
+
+rootmapfile = ${LIBNAME}.rootmap
+ROOTMAP_DIR = ../$(tag)
+fulllibname = lib${LIBNAME}.$(shlibsuffix)
+
+${CONSTITUENT} :: ${ROOTMAP_DIR}/$(rootmapfile)
+	@:
+
+${ROOTMAP_DIR}/$(rootmapfile) :: $(bin)$(fulllibname)
+	@echo 'Generating rlibmap rootmap file for $(fulllibname)'
+	cd ../$(tag);rlibmap -o $(rootmapfile) -l $(fulllibname) -c ../${LIBNAME}/LinkDef.h
+
+install :: ${CONSTITUENT}install
+${CONSTITUENT}install :: ${CONSTITUENT}
+
+uninstall :: ${CONSTITUENT}uninstall
+${CONSTITUENT}uninstall :: ${CONSTITUENT}clean
+
+${CONSTITUENT}clean ::
+	@echo 'Deleting $(rootmapfile)'
+	@rm -f ${ROOTMAP_DIR}/$(rootmapfile)
